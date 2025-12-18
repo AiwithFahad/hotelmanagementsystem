@@ -2,7 +2,9 @@
 https://drive.google.com/file/d/1NsEkNnJPQqOYYXGDlgLEmJHJcMybF1gF/view?usp=sharing
 # [Web site](https://sunset-valley-automation.vercel.app/)
 https://sunset-valley-automation.vercel.app/
+#Working fine on local; chatbox works properly on live.
 
+Online VAPI connectivity issue.
 # Vapi AI Instructions
 (VAPI AI is working properly on the local PC web host but not on Vercel hosting.)
 1. Get Your Vapi Public API Key

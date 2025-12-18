@@ -1,0 +1,4410 @@
+{
+  "name": "hotelaisystemfinalworkflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Conversational to customer",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2336,
+        1264
+      ],
+      "id": "0a069b9a-189d-4097-acd3-087f6f616e31",
+      "name": "Conversational to customer",
+      "webhookId": "16e35ce4-a22d-4f43-ab05-3886beae5722"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -1392,
+        1264
+      ],
+      "id": "7d7f9314-c549-407d-bfd1-002b4019e4e1",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -2112,
+        1488
+      ],
+      "id": "51f6c233-b041-450e-b16c-f97ce4fe57cb",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "bPK5tm7UYxT2kkxo",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.searchquery }}",
+        "options": {
+          "systemMessage": "=You are an AI assistant specialized in providing detailed information about Central Hotel, owned by Farhan Ghaffar. Your goal is to answer user questions professionally, clearly, and helpfully. \n\nHere is the information you can provide:\n\n**Hotel Overview:**\n- Name: Central Hotel\n- Owner: Farhan Ghaffar\n- Buildings: Hotel Sunrise, Grand Moon\n\n**Building Details:**\n\n1. Hotel Sunrise\n   - Address: 12 Beach Road, City\n   - Number of Floors: 2\n   - Manager: Ali Khan\n   - Email: ali@sunrise.com\n   - Phone: 3001123344\n\n2. Grand Moon\n   - Address: 5 Central Ave, City\n   - Number of Floors: 3\n   - Manager: Yasir Ahmed\n   - Email: yasir@grandmoon.com\n   - Phone: 3002234455\n\n**Room Information:**\n- Single Room: Comfortable room for single occupancy. Maximum Guests: 1. Base Price: $100 per night.\n- Double Room: Spacious room for double occupancy. Maximum Guests: 2. Base Price: $150 per night.\n\n**Services Offered:**\n- Breakfast: Enjoy a delicious breakfast in the hotel restaurant. Default Price: $15 per person.\n- Airport Shuttle: Convenient transportation to and from the airport. Default Price: $30 per trip.\n- Room Service: 10% service charge applies.\n- Spa & Wellness: $15 per service.\n\n**Booking Assistance:**\n- Guide users on making a booking or reservation.\n- Offer users the choice to either:\n  1. Use the **Voice Assistant** for booking queries.\n  2. Make a **Chat-based booking** with hotel staff.\n\n**Behavior Instructions:**\n- Always respond politely and professionally.\n- Provide clear, concise information when users ask about buildings, rooms, or services.\n- If a user asks about prices, provide the default price only.\n- Encourage booking options if the user shows intent to reserve a room or service.\n- Do not provide information outside of the hotel’s details or services listed above.\n\n**Example Queries You Should Handle:**\n- “Tell me about the Grand Moon building.”\n- “What rooms are available at Central Hotel?”\n- “I want to book a room using the voice assistant.”\n- “What services do you offer?”\n- “Give me the address of Hotel Sunrise.”\n\nEnd of system instructions.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -1936,
+        1264
+      ],
+      "id": "345c2b5d-430f-4a52-bca6-9eba1b269479",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "content": "# 🧠 Conversational AI Voice Agent (ElevenLabs Agent) ",
+        "height": 800,
+        "width": 1664
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2560,
+        1008
+      ],
+      "typeVersion": 1,
+      "id": "218468b8-a8e5-4667-975d-11e9f6cd4cb9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# 🗣️ VAPI AI  Booking Call Assistant 🗣️",
+        "height": 912,
+        "width": 1648,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -2544,
+        1840
+      ],
+      "id": "394286ff-2c48-4b6b-b583-415649671976",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "# 🏨🤖✨ Searches Rooms & Creates IDs ✨🤖🏨",
+        "height": 912,
+        "width": 1872
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -896,
+        1856
+      ],
+      "typeVersion": 1,
+      "id": "39197ff9-6aea-4ac8-8c16-18fe82dcf585",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {},
+      "id": "41d29b28-caac-4581-9753-2fc9cdb93aaa",
+      "name": "Cron Trigger: 9 AM Daily",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        1232
+      ]
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "cd7a0ade-a4f5-4d3b-8346-b2d6783c81c4",
+      "name": "Find Bookings Checking In Tomorrow",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1664,
+        1328
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const items = $input.all();\nconst output = [];\n\nfor (const item of items) {\n  const guest = item.json.guest || {}; // from merged guest lookup\n\n  output.push({\n    json: {\n      BookingID: item.json.BookingID,     // ✅ added\n      GuestID: item.json.GuestID,\n\n      CheckInDate: item.json.CheckInDate,\n      TotalAmount: item.json.TotalRoomAmount,\n      BuildingID: item.json.BuildingID,\n\n      FullName: guest.FullName || '',     // e.g. \"David Chen\"\n      Email: guest.Email || 'dchen@corp.net',\n      GuestPhone: guest.Phone || ''\n    }\n  });\n}\n\nreturn output;\n"
+      },
+      "id": "6cc62887-f73d-45aa-873c-a6948b70e6f9",
+      "name": "Prepare Guest Data for Reminder",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2112,
+        1232
+      ]
+    },
+    {
+      "parameters": {},
+      "id": "89f09c0c-bd0b-42fb-bde4-98ebc7b682b0",
+      "name": "Cron Trigger: 2 PM Daily",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        1424,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "30f128f7-840a-4baa-bf4d-633ca5597009",
+      "name": "Find Bookings Checked Out Yesterday",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1648,
+        1600
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const items = $input.all();\nconst output = [];\n\nfor (const item of items) {\n  // Guest object from merged guest lookup\n  const guest = item.json.guest || item.json;\n\n  output.push({\n    json: {\n      BookingID: item.json.BookingID,\n      GuestID: item.json.GuestID,\n\n      // Real guest data (no defaults like \"Valued Guest\")\n      FullName: guest.FullName,          // e.g. \"Amelia Dubois\"\n      Email: guest.Email,                // e.g. \"aliahmed54321u@gmail.com\"\n      Phone: guest.Phone                 // e.g. \"+33XXXXXXXXX\"\n    }\n  });\n}\n\nreturn output;\n"
+      },
+      "id": "67594440-4f24-4205-81b5-49b34e10c597",
+      "name": "Prepare Guest Data for Feedback",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2096,
+        1696
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "=",
+        "subject": "Thank you for staying with Central Hotel!",
+        "message": "=<div style=\"max-width:480px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:14px;color:#333;line-height:1.5;\">\n\n  <p style=\"margin:0 0 12px 0;\">\n    Dear {{ $json.FullName }},\n  </p>\n\n  <p style=\"margin:0 0 14px 0;\">\n    Thank you for choosing <strong>Central Hotel</strong>. We hope you had a\n    comfortable and enjoyable stay with us.\n  </p>\n\n  <p style=\"margin:0 0 14px 0;\">\n    Your feedback is very important to us and helps us improve our services.\n    We would truly appreciate it if you could take a moment to share your experience.\n  </p>\n\n  <p style=\"margin:0 0 18px 0;\">\n    👉 <strong>Please reply to this email with your feedback</strong>, or let us know\n    how we can make your next stay even better.\n  </p>\n\n  <p style=\"margin:0 0 16px 0;\">\n    We look forward to welcoming you again in the future.\n  </p>\n\n  <p style=\"margin:0;font-size:13px;color:#555;\">\n    Warm regards,<br>\n    <strong>Central Hotel Team</strong>\n  </p>\n\n</div>\n",
+        "options": {}
+      },
+      "id": "67ebd12c-dcd0-4bcc-b0a7-41011e266bd2",
+      "name": "Send Feedback Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2320,
+        1696
+      ],
+      "webhookId": "d1464a3c-1d05-499e-b76d-50b15dbd4220",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "pre check-in reminder",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <p style=\"margin:0 0 10px 0;\">\n    Dear {{ $json.FullName || 'Guest' }},\n  </p>\n\n  <p style=\"margin:0 0 14px 0;color:#555;\">\n    This is a friendly reminder about your upcoming stay with us.\n  </p>\n\n  <div style=\"background:#f7f9fc;border-radius:8px;padding:12px;margin-bottom:14px;\">\n    <p style=\"margin:0 0 8px 0;font-weight:bold;font-size:13px;\">\n      Booking Details\n    </p>\n\n    <table width=\"100%\" style=\"font-size:12px;color:#555;\">\n      <tr>\n        <td>Booking ID</td>\n        <td align=\"right\"><strong>{{ $json.BookingID }}</strong></td>\n      </tr>\n      <tr>\n        <td>Check-in</td>\n        <td align=\"right\">{{ $json.CheckInDate }}</td>\n      </tr>\n      <tr>\n        <td>Building</td>\n        <td align=\"right\">{{ $json.BuildingID }}</td>\n      </tr>\n      <tr>\n        <td>Total</td>\n        <td align=\"right\"><strong>{{ $json.TotalAmount }}</strong></td>\n      </tr>\n    </table>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;\">\n    Please complete your <strong>pre-check-in</strong> before arrival to ensure a\n    smooth experience.\n  </p>\n\n  <p style=\"margin:0 0 16px 0;color:#555;\">\n    Need help? Just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;\">\n    Best regards,<br>\n    <strong>Guest Services Team</strong>\n  </p>\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2336,
+        1232
+      ],
+      "id": "aed5bbbf-8620-47b8-b98f-315265f6c436",
+      "name": "Send a message",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "guestDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "4d4adf29-5c83-486a-b640-b5f201feae17",
+      "name": "Find Bookings Checking In Tomorrow1",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1664,
+        1136
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "guestDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "ef6bfe41-3e91-4771-83d8-a3cd5c3e28ad",
+      "name": "Find Bookings Checking In Tomorrow2",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1648,
+        1792
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1872,
+        1696
+      ],
+      "id": "37ca2abd-5303-424c-9d17-ba1999515985",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1888,
+        1232
+      ],
+      "id": "c2b57a78-0540-4f61-a67e-1027dd0c439e",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "content": "# Pre-Check-In Reminder",
+        "height": 544,
+        "width": 1472
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        1040
+      ],
+      "typeVersion": 1,
+      "id": "a46f1c71-eb3a-4276-b5f7-831e150ee4e4",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "# Checkout & Guest Feedback Task",
+        "height": 464,
+        "width": 1472
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        1504
+      ],
+      "typeVersion": 1,
+      "id": "fc9d784a-66fa-491c-a8ee-4c13dc7c547c",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {},
+      "id": "00a57881-a7c2-4512-ba50-d1ecae593090",
+      "name": "Cron Trigger: 7 AM Daily",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "cc8fe081-abe3-434e-a334-3c3bdb6ed455",
+      "name": "Get Last 24-Hour Bookings",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        2464
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomBookingDetail",
+        "options": {
+          "limit": 1000
+        }
+      },
+      "id": "aaa68f45-8a0e-400a-8566-7fa07e8ad381",
+      "name": "Check Inventory Health",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        1568,
+        2656
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "functionCode": "const bookings = $items('Get Last 24-Hour Bookings').map(item => item.json);\nconst rooms = $items('Check Inventory Health').map(item => item.json);\n\n// --- 1. Calculate Booking KPIs ---\nlet totalRevenue = 0;\nlet bookingCount = 0;\n\nfor (const booking of bookings) {\n  const amount = Number(booking.TotalRoomAmount) || 0; \n  if (amount > 0) {\n    totalRevenue += amount;\n    bookingCount++;\n  }\n}\n\nconst averageBookingValue = bookingCount > 0 ? (totalRevenue / bookingCount).toFixed(2) : 0;\nconst formattedRevenue = totalRevenue.toLocaleString('en-US', { style: 'currency', currency: 'USD' });\n\n// --- 2. Calculate Inventory KPIs ---\nconst vacantRooms = rooms.filter(room => room.status === 'Vacant').length;\nconst cleaningPending = rooms.filter(room => room.status === 'Needs Cleaning').length;\n\n// --- 3. Compile Report ---\nconst reportBody = `\n  <h2>Daily Hotel Performance Summary</h2>\n  <p>Report Date: ${$now.toFormat('MMM dd, yyyy')}</p>\n  <hr>\n  \n  <h3>💰 Revenue & Bookings (Last 24 Hours)</h3>\n  <ul>\n    <li><strong>New Bookings:</strong> ${bookingCount}</li>\n    <li><strong>Total Revenue Secured:</strong> ${formattedRevenue}</li>\n    <li><strong>Average Booking Value:</strong> $${averageBookingValue}</li>\n  </ul>\n  \n  <h3>🏠 Current Inventory Health</h3>\n  <ul>\n    <li><strong>Available (Vacant) Rooms:</strong> ${vacantRooms}</li>\n    <li><strong>Cleaning Pending Rooms:</strong> ${cleaningPending}</li>\n  </ul>\n  \n  <hr>\n  <p>Data pulled from MongoDB: <em>bookings</em> and <em>rooms</em> collections.</p>\n`;\n\nreturn [{\n  json: {\n    reportSubject: `Daily Hotel Performance Summary - ${$now.toFormat('MMM dd, yyyy')}`,\n    reportBody: reportBody,\n    recipient: 'manager@yourhotel.com'\n  }\n}];"
+      },
+      "id": "14b376b3-bfb6-4301-ac6c-e8e3e41e536a",
+      "name": "Calculate & Compile Report (Code)",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [
+        2016,
+        2560
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "={{ $json.reportSubject }}",
+        "message": "={{ $json.reportBody }}",
+        "options": {}
+      },
+      "id": "a8013652-85eb-42d8-b691-0ceea39edd56",
+      "name": "Send Daily Report via Email",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2240,
+        2560
+      ],
+      "webhookId": "8c2d830d-c249-457f-a6c2-a9ca30ae2962",
+      "executeOnce": true,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {}
+      },
+      "id": "63d7186d-403a-484c-9e86-b60b6d7dff32",
+      "name": "Hold Booking in Database",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        2160
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "riskThreshold",
+              "value": 5,
+              "type": "number"
+            },
+            {
+              "id": "id-2",
+              "name": "highAmountThreshold",
+              "value": 5000,
+              "type": "number"
+            },
+            {
+              "id": "id-3",
+              "name": "suspiciousEmailDomains",
+              "value": "[\"tempmail.com\", \"guerrillamail.com\", \"10minutemail.com\", \"throwaway.email\"]",
+              "type": "array"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "6f3ee2a6-2181-444c-b033-aa0a4cd22526",
+      "name": "Workflow Configuration1",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1504,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Calculate risk score based on booking data\nconst item = $input.item.json;\nlet riskScore = 0;\nconst riskReasons = [];\n\n// Check if NumGuests > 4 AND CheckInDate is today/tomorrow (+5 points)\nconst numGuests = item.NumGuests || 0;\nconst checkInDate = new Date(item.CheckInDate);\nconst today = new Date();\ntoday.setHours(0, 0, 0, 0);\nconst tomorrow = new Date(today);\ntomorrow.setDate(tomorrow.getDate() + 1);\n\nif (numGuests > 4 && (checkInDate.getTime() === today.getTime() || checkInDate.getTime() === tomorrow.getTime())) {\n  riskScore += 5;\n  riskReasons.push('More than 4 guests with immediate check-in');\n}\n\n// Check if TotalRoomAmount > $5000 (+3 points)\nconst totalRoomAmount = parseFloat(item.TotalRoomAmount) || 0;\nif (totalRoomAmount > 5000) {\n  riskScore += 3;\n  riskReasons.push('High booking amount over $5000');\n}\n\n// Check if GuestEmail domain is suspicious (+5 points)\nconst guestEmail = item.GuestEmail || '';\nconst suspiciousDomains = ['tempmail.com', 'guerrillamail.com', 'throwaway.email', '10minutemail.com', 'mailinator.com'];\nconst emailDomain = guestEmail.split('@')[1] || '';\n\nif (suspiciousDomains.some(domain => emailDomain.includes(domain))) {\n  riskScore += 5;\n  riskReasons.push('Suspicious email domain detected');\n}\n\n// Return all input fields plus riskScore and riskReason array\nreturn {\n  ...item,\n  riskScore: riskScore,\n  riskReasons: riskReasons\n};"
+      },
+      "id": "9bf1a47d-ec21-4d83-9eaa-dc2148e59d20",
+      "name": "Calculate Risk Score1",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1760,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "id-1",
+              "leftValue": "={{ $('Calculate Risk Score1').item.json.riskScore }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "86d04ee5-70ac-47c3-ae15-d0504e921a78",
+      "name": "Check Risk Level1",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1952,
+        2160
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1792,
+        2560
+      ],
+      "id": "54be413f-4b48-4c7b-b9d4-ab5ff4366c6a",
+      "name": "Merge4"
+    },
+    {
+      "parameters": {
+        "subject": "Alert",
+        "message": "=<div style=\"max-width:520px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:14px;color:#333;border:1px solid #f2c2c2;border-radius:10px;padding:18px;background:#fff5f5;\">\n\n  <h2 style=\"margin:0 0 14px 0;\n             color:#c62828;\n             font-size:22px;\n             text-align:center;\">\n    🛑 Sunset Valley – Fraud Alert\n  </h2>\n\n  <p style=\"margin:0 0 12px 0;color:#444;\">\n    A booking associated with <strong>Sunset Valley</strong> has been flagged as\n    <strong style=\"color:#c62828;\">HIGH RISK</strong> by our fraud detection system.\n  </p>\n\n  <div style=\"background:#ffffff;border-radius:8px;padding:12px;border:1px solid #f2c2c2;margin-bottom:14px;\">\n    <table width=\"100%\" style=\"font-size:13px;color:#444;\">\n      <tr>\n        <td><strong>Booking ID:</strong></td>\n        <td align=\"right\">{{ $json.BookingID }}</td>\n      </tr>\n      <tr>\n        <td><strong>Risk Score:</strong></td>\n        <td align=\"right\" style=\"color:#c62828;font-weight:bold;\">\n          {{ $json.riskScore }}\n        </td>\n      </tr>\n    </table>\n\n    <p style=\"margin:10px 0 0 0;color:#555;\">\n      <strong>Risk Reason(s):</strong><br>\n      {{ $json.riskReason }}\n    </p>\n  </div>\n\n  <p style=\"margin:0 0 12px 0;color:#444;\">\n    ⚠️ <strong>Immediate action required:</strong> Please review this booking carefully\n    before approving or processing any payment.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;\">\n    This alert was automatically generated by the Sunset Valley fraud monitoring system.\n  </p>\n\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2176,
+        2160
+      ],
+      "id": "8c719975-e068-4432-8e42-dcdda3cee11a",
+      "name": "Send a message2",
+      "webhookId": "fd8af2c0-6e7b-44d6-8b61-24c39c430f77",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# High-Risk Booking Fraud Check",
+        "height": 352,
+        "width": 1488
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1168,
+        1984
+      ],
+      "typeVersion": 1,
+      "id": "6514e22b-8df0-49fd-8c1a-5d1ac8d90a0c",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "# Daily Business Intelligence Report",
+        "height": 432,
+        "width": 1488
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1184,
+        2384
+      ],
+      "typeVersion": 1,
+      "id": "bfb6e160-fbc8-492d-9833-62af95023081",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16NuDdprF4BOr3j8hXK1OwcpPaq5wjVz_UWe3Rp_IwlM",
+          "mode": "list"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16NuDdprF4BOr3j8hXK1OwcpPaq5wjVz_UWe3Rp_IwlM/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        -1952,
+        1504
+      ],
+      "id": "dcdfd64e-89d0-43b5-be3e-ca88b7d29bb5",
+      "name": "previous customers",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "bSdajiJmRV1ZsEuq",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "f21b394f-f2c9-4f42-b221-0b7c25f213d6",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2256,
+        3264
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "eeqjKwJIJtyVNTHf",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "options": {
+          "systemMessage": "=ROLE\nYou are a helpful, polite, and professional hotel booking assistant connected to a MongoDB database.\nYour responsibility is to:\nGuide the guest through the booking process\nRead information from MongoDB collections exactly as defined\nCollect, validate, and confirm booking details\nPrepare booking data for a separate AI model that performs database writes\n\n❗ You MUST NOT save any booking yourself\n🔐 CONVERSATION STATE CONTROL (NEW — DO NOT REMOVE)\nYou operate using conversation states:\nSTATE = \"COLLECTING\" | \"SUMMARY_SHOWN\" | \"BOOKING_PREPARED\"\nInitial STATE = \"COLLECTING\"\n\nState Rules\nJSON output is allowed ONLY ONCE\nJSON output is allowed ONLY when STATE transitions to BOOKING_PREPARED\nOnce JSON is sent, STATE is permanently locked\n\nAfter JSON is sent:\nNEVER send JSON again\nALWAYS send the payment link\nIgnore further “confirm / book it” requests\n\n🚨 CRITICAL\nIf JSON has already been sent once in this conversation,\nDO NOT send it again under any circumstances.\n\n\nDATABASE COLLECTIONS (UNCHANGED)\nbuildingDetail\nbuildingID\nbuildingName\naddress\nnumFloors\t\nmanagerName\nmanagerEmail\nManagerPh\n\nfloorDetail\nbuildingID\nfloorID\nfloorTitle\n\nroomTypes\nroomTypeID\ntypeName\ndescription\nbasePricePerNight\nmaxGuests\n\nroomsDetail\nRoomID\nbuildingID\nfloorID\nroomTypeID\nroomStatus\ncurrentPrice\n\nroomBookingDetail\nRoomID\nCheckInDate\nCheckOutDate\n\nserviceTypes\nserviceID\nserviceName\ndescription\ndefaultPrice\nresponsiblePerson\n\nserviceAvailability\nbuildingID\nserviceID\navailable\nnotes\n\nbookingDetail\nBookingID\nGuestID\nBuildingID\nRoomID\nCheckInDate\nCheckOutDate\nBookedOn\nNumGuests\nTotalRoomAmount\nPaymentStatus\nBookingStatus\nNotes\n\nguestDetail\nGuestID\nBookingID\nFullName\nEmail\nPhone\nCNIC\nNationality\nGuestStatus\n\nPRIMARY RESPONSIBILITIES (UNCHANGED LOGIC)\n\n1 Building & Floors\nGreet politely\nShow building details from buildingDetail\nShow floors from floorDetail\nAsk preferred floor\nOffer to show available services\n\n2 Room Display Rules (UNCHANGED)\nWhen showing rooms:\nALWAYS show:\ntypeName + description + (RoomID) — price per night\nMapping:\nroomsDetail.roomTypeID → roomType.roomTypeID\nNEVER show technical IDs\n🚫 Never say a room is available before dates are provided\n\n3 Guest & Booking Data Collection (UNCHANGED)\nYou MUST collect:\nFull Name\nEmail\nPhone\nCNIC\nNationality\nCheck-In Date (YYYY-MM-DD)\nCheck-Out Date (YYYY-MM-DD)\nNumber of Guests\n\n🟦 VALIDATION RULES (IMPORTANT FIXES)\nRequired Fields\nAll fields must be non-empty\n\nDate Rules\nFormat: YYYY-MM-DD\nCheckInDate < CheckOutDate\n\n🚨 CRITICAL\nYou MUST NEVER modify user-provided dates.\nIf a change is needed → ask explicitly.\n\nA room can only be confirmed available after performing BOTH checks:\nStep 1 — RoomStatus Check\nRoomStatus alone MUST NOT be used to reject a booking.\nRoom availability is determined ONLY by date conflict check.\n\nRoom availability is determined ONLY by date-conflict check.\nRoomStatus must NEVER be used alone to reject a booking.\n Or Even if roomStatus = \"booked\", you MUST always perform a date-conflict check.\nIf NO date overlap exists, the room can be booked.\nStep 2 — Date-Conflict Check (ALWAYS REQUIRED)\nYou MUST ALWAYS check roomBookingDetail for conflicts whenever the user wants a room AND provides dates.\nOverlap rule:\nTwo date ranges overlap if:\nrequestedCheckIn < existingCheckOut\nAND\nrequestedCheckOut > existingCheckIn\nIf ANY overlap:\nPolitely say: “Your desired dates are not available for this room. Would you like to check another room?”\n\nDo NOT allow booking.\nIf NO overlap:\nThe room is available; continue.\n\n\n❗ VERY IMPORTANT UPDATE\nNever confirm availability or recommend a room as “available” before the user provides Check-In and Check-Out Date.\nBefore dates:\nList rooms normally (with type names)\nDo NOT say a room is available.\n\nAfter dates:\nPerform full conflict check before allowing booking.\nRoomStatus must be “vacant” and have NO date conflict.\n\nIf NO overlap:\n✔ Room may proceed\nGuest Capacity\nIf NumGuests > maxGuests:\nWarn guest\nContinue only with explicit confirmation\nAdd note in summary (not saved yet)\n\n🟨 BOOKING SUMMARY (STATE → SUMMARY_SHOWN)\nAfter collecting all data, show:\nRoom type + RoomID\nDates\nTotal nights\nPrice per night × nights\nGuest details\nNotes (if any)\nAsk:\n“Would you like to confirm these details?”\n\n🟩 FINAL OUTPUT — SAVE TRIGGER (STRICT)\n✅ FIRST CONFIRMATION ONLY\nWhen the guest confirms for the first time:\nOutput ONLY THIS SENTENCE, followed immediately by ONE JSON OBJECT:\nAll booking details are ready. Let me know when you want me to save the booking.\n{\n  \"bookingDetail\": {\n    \"BuildingID\": \"\",\n    \"RoomID\": \"\",\n    \"CheckInDate\": \"\",\n    \"CheckOutDate\": \"\",\n    \"NumGuests\": \"\",\n    \"TotalRoomAmount\": \"\",\n    \"Notes\": \"\"\n  },\n  \"guestDetail\": {\n    \"FullName\": \"\",\n    \"Email\": \"\",\n    \"Phone\": \"\",\n    \"CNIC\": \"\",\n    \"Nationality\": \"\"\n  },\n  \"systemInfo\": {\n    \"LastGuestID\": \"\",\n    \"LastBookingID\": \"\"\n  }\n}\n\n\n✔ Transition STATE → BOOKING_PREPARED\n✔ JSON sent ONCE\n\n💳 PAYMENT FLOW (NEW FIX — REQUIRED)\nAfter JSON Has Been Sent (STATE = BOOKING_PREPARED) Tell user to check his email for payment link.\nIf the user says:\n“yes”\n“confirm”\n“book it”\n“save it”\n🚫 DO NOT send JSON again\n✅ Respond ONLY with payment link:\nYour booking is prepared successfully.\nPlease complete your payment to confirm your reservation:\n\n🚫 ABSOLUTE RULES (DO NOT BREAK)\nNever resend booking JSON\nNever generate new IDs\nNever change user dates\nNever save booking yourself\nNever assume availability without conflict check\nNever speak extra text during JSON output\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1824,
+        3040
+      ],
+      "id": "a4b1145e-ab0d-4306-bb94-904c70852a36",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "guestDetail",
+        "fields": "GuestID,BookingID,FullName,Email,Phone,CNIC,Nationality,GuestStatus",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        3136
+      ],
+      "id": "3d2e834d-10a6-4515-9585-df95b57f9bbd",
+      "name": "Insert documents",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18505356-0ec5-41b3-90a2-8e87041c1dc7",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "All booking details are ready. Let me know when you want me to save the booking.",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -800,
+        3040
+      ],
+      "id": "8ef389a1-5c9b-4e3b-adc4-20eb5feb41d8",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "=bookingDetail",
+        "fields": "=BookingID,GuestID,BuildingID,RoomID,CheckInDate,CheckOutDate,BookedOn,NumGuests,TotalRoomAmount,PaymentStatus,PaymentMode,BookingStatus,Notes\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        2944
+      ],
+      "id": "0748fcb9-bd81-4ce6-b59f-9230f1f654d2",
+      "name": "Insert Booking Detail",
+      "notesInFlow": false,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "203be805-120f-463c-ad9b-df34661d5950",
+              "name": "BookingID",
+              "value": "={{ $json.bookingDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "239d6da5-a55e-4910-9784-7cc42978eb4a",
+              "name": "GuestID",
+              "value": "={{ $json.guestDetail.GuestID }}",
+              "type": "string"
+            },
+            {
+              "id": "47870f0d-7df1-479d-8141-6ab92755067b",
+              "name": "BuildingID",
+              "value": "={{ $json.bookingDetail.BuildingID }}",
+              "type": "string"
+            },
+            {
+              "id": "96f82d2a-0a99-4351-a0b0-5ac3ae613c3f",
+              "name": "RoomID",
+              "value": "={{ $json.bookingDetail.RoomID }}",
+              "type": "string"
+            },
+            {
+              "id": "292985a5-2109-4f88-afd4-2220115b4f16",
+              "name": "CheckInDate",
+              "value": "={{ $json.bookingDetail.CheckInDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ce479a9f-f298-4872-8b12-602d211ff808",
+              "name": "CheckOutDate",
+              "value": "={{ $json.bookingDetail.CheckOutDate }}",
+              "type": "string"
+            },
+            {
+              "id": "b53adb0f-5d64-4b79-9b03-ab4ea141a3f0",
+              "name": "BookedOn",
+              "value": "={{ new Date().toISOString().slice(0,10) }}",
+              "type": "string"
+            },
+            {
+              "id": "12784d25-66b2-4246-9ebf-2a7099dd0015",
+              "name": "NumGuests",
+              "value": "={{ $json.bookingDetail.NumGuests }}",
+              "type": "number"
+            },
+            {
+              "id": "13f8ab77-4831-4c3b-a7d0-38b0d75b5116",
+              "name": "TotalRoomAmount",
+              "value": "={{ $json.bookingDetail.TotalRoomAmount }}",
+              "type": "number"
+            },
+            {
+              "id": "79169a83-7ee1-410a-96ac-8a0bdc37b5a2",
+              "name": "PaymentStatus",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "227f13f9-f72a-4061-a980-15e035bd7d2b",
+              "name": "PaymentMode",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "ba042030-21b5-475c-b39f-b331675f4912",
+              "name": "BookingStatus",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "ee72ae35-87eb-4529-ae7c-41c1b6e8390b",
+              "name": "Notes",
+              "value": "={{ $json.bookingDetail.Notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        2944
+      ],
+      "id": "af5ccb64-6252-408b-acfd-0fadcf7d1ac7",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e282d97-ed0f-4e4d-b1c8-4e3c4ca13029",
+              "name": "GuestID",
+              "value": "={{ $json.guestDetail.GuestID }}",
+              "type": "string"
+            },
+            {
+              "id": "7ccaa232-eb79-4c20-bad7-d41a73e14ae2",
+              "name": "BookingID",
+              "value": "={{ $json.guestDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "07712d1a-d872-4627-87aa-e4a17e5cfc5e",
+              "name": "FullName",
+              "value": "={{ $json.guestDetail.FullName }}",
+              "type": "string"
+            },
+            {
+              "id": "4150a5d8-97c5-408a-96dc-90eb41d209ee",
+              "name": "Email",
+              "value": "={{ $json.guestDetail.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "6ecc4a47-7059-498e-bf68-d82cb5a5b99c",
+              "name": "Phone",
+              "value": "={{ $json.guestDetail.Phone }}",
+              "type": "string"
+            },
+            {
+              "id": "a3c5acab-4e6c-4a57-8667-7ad25927f0b1",
+              "name": "CNIC",
+              "value": "={{ $json.guestDetail.CNIC }}",
+              "type": "string"
+            },
+            {
+              "id": "3c5352d3-9ed2-495d-9e26-96e911269183",
+              "name": "Nationality",
+              "value": "={{ $json.guestDetail.Nationality }}",
+              "type": "string"
+            },
+            {
+              "id": "c15d95e7-5af8-41d7-96a9-0a26f103374d",
+              "name": "GuestStatus",
+              "value": "=Pending",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        3136
+      ],
+      "id": "aec5d90b-20c8-4f37-9049-04799779a6fb",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "203be805-120f-463c-ad9b-df34661d5950",
+              "name": "BookingID",
+              "value": "={{ $json.bookingDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "96f82d2a-0a99-4351-a0b0-5ac3ae613c3f",
+              "name": "RoomID",
+              "value": "={{ $json.bookingDetail.RoomID }}",
+              "type": "string"
+            },
+            {
+              "id": "292985a5-2109-4f88-afd4-2220115b4f16",
+              "name": "CheckInDate",
+              "value": "={{ $json.bookingDetail.CheckInDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ce479a9f-f298-4872-8b12-602d211ff808",
+              "name": "CheckOutDate",
+              "value": "={{ $json.bookingDetail.CheckOutDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ee72ae35-87eb-4529-ae7c-41c1b6e8390b",
+              "name": "Notes",
+              "value": "={{ $json.bookingDetail.Notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        544,
+        3328
+      ],
+      "id": "7d262125-61ab-46d9-aad1-63b3c464cd5a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "=roomBookingDetail",
+        "fields": "=BookingID,RoomID,CheckInDate,CheckOutDate,Notes\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        768,
+        3328
+      ],
+      "id": "355e3add-e7a7-4e7e-9ca1-8b07d3a745a8",
+      "name": "Insert Room Booking Detail",
+      "notesInFlow": false,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        2944
+      ],
+      "id": "42f967b4-b8b7-41ae-a4c0-3b392fdea759",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "collection": "=buildingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -2000,
+        3264
+      ],
+      "id": "23c506bb-7baa-4d95-a1fe-216ef2eddff1",
+      "name": "buildingDetail",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "floorDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1872,
+        3264
+      ],
+      "id": "eb01f868-5dff-46e4-812a-b5c109788698",
+      "name": "floorDetail",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomTypes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1744,
+        3264
+      ],
+      "id": "acc71782-7522-45f2-8d34-dc78d4a992c9",
+      "name": "roomTypes",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomsDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1616,
+        3264
+      ],
+      "id": "7bf6b907-19b9-409e-9aed-509028eba34f",
+      "name": "roomsDetail",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomBookingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1488,
+        3264
+      ],
+      "id": "17b7b82f-5278-42e0-9922-e0d6b3bc968f",
+      "name": "roomBookingDetail",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "serviceTypes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1360,
+        3264
+      ],
+      "id": "6062256a-fb94-4d32-b27d-58b4dfdfd885",
+      "name": "serviceTypes",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "serviceAvailability",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1232,
+        3264
+      ],
+      "id": "8ea55e37-733a-4f98-a5b1-7b0d65682753",
+      "name": "serviceAvailability",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.output || \"\";\n\n// Check if booking details are ready\nif (!text.includes(\"All booking details are ready\")) {\n  return [];\n}\n\n// Extract JSON inside ```json ... ``` block\nconst match = text.match(/```json\\s*([\\s\\S]*?)```/);\nif (!match) {\n  throw new Error(\"Booking JSON not found\");\n}\n\n// Parse the extracted JSON safely\nlet bookingPayload;\ntry {\n  bookingPayload = JSON.parse(match[1]);\n} catch (err) {\n  throw new Error(\"Invalid JSON format\");\n}\n\n// Return the result in the original format\nreturn [\n  {\n    json: {\n      bookingPayload\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -576,
+        3136
+      ],
+      "id": "9f4333a7-5f91-4b8c-85ce-258696dbfa99",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {
+          "limit": 1,
+          "sort": "{ \"BookingID\": -1 }"
+        },
+        "query": "{ }"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        3136
+      ],
+      "id": "092f7fc3-ff64-48cc-8f09-90ce38a14b76",
+      "name": "Find documents",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "guestDetail",
+        "options": {
+          "limit": 1,
+          "sort": "{ \"GuestID\": -1 }"
+        },
+        "query": "{ }"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        -128,
+        3136
+      ],
+      "id": "c4f1db2d-7fa7-4cda-b1e4-d4b3e95bb695",
+      "name": "Find documents1",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---------- BookingID ----------\nlet lastBookingId = null;\n\nconst bookingItems = $items(\"Find documents\");\nif (bookingItems.length > 0) {\n  lastBookingId = bookingItems[0].json.BookingID;\n}\n\nlet nextBookingNumber = lastBookingId\n  ? parseInt(lastBookingId.replace(\"B\", \"\"), 10) + 1\n  : 1001;\n\nconst newBookingId = `B${nextBookingNumber}`;\n\n\n// ---------- GuestID ----------\nlet lastGuestId = null;\n\nconst guestItems = $items(\"Find documents1\");\nif (guestItems.length > 0) {\n  lastGuestId = guestItems[0].json.GuestID;\n}\n\nlet nextGuestNumber = lastGuestId\n  ? parseInt(lastGuestId.replace(\"G\", \"\"), 10) + 1\n  : 100;\n\nconst newGuestId = `G${nextGuestNumber}`;\n\n\nreturn [\n  {\n    json: {\n      BookingID: newBookingId,\n      GuestID: newGuestId\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        3136
+      ],
+      "id": "1b3bf371-981d-4b9a-82bd-6fe0e4d54490",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const booking = $items(\"Code in JavaScript1\")[0].json.bookingPayload;\nconst ids = $json;\n\n// Inject IDs\nbooking.bookingDetail.BookingID = ids.BookingID;\nbooking.guestDetail.GuestID = ids.GuestID;\nbooking.guestDetail.BookingID = ids.BookingID;\n\n// System info for payment\nbooking.systemInfo.LastBookingID = ids.BookingID;\nbooking.systemInfo.LastGuestID = ids.GuestID;\n\nreturn [{ json: booking }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        3136
+      ],
+      "id": "bc85c9c3-760a-4592-80a0-6efb38b7e8fe",
+      "name": "Code in JavaScript3"
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Webhook1').item.json.body.sessionId }}",
+        "contextWindowLength": 150
+      },
+      "id": "1d1eec25-668b-4abd-902c-91df128a1c05",
+      "name": "Conversation Memory1",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2128,
+        3264
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "00679f68-a183-4aed-8a1f-f351f2a3a2cd",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2480,
+        3040
+      ],
+      "id": "c93f90e7-383e-4fbf-ba13-2c90621fc4dd",
+      "name": "Webhook1",
+      "webhookId": "00679f68-a183-4aed-8a1f-f351f2a3a2cd"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $('AI Agent1').item.json.output }}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1024,
+        3040
+      ],
+      "id": "a1f17f6e-617c-4142-9f34-2dd5b435d4d4",
+      "name": "Respond to Webhook2"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.body.PaymentStatus }}",
+              "rightValue": "Paid",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "fae6f66c-3480-4a96-8fba-e4ed6184b894"
+            },
+            {
+              "leftValue": "={{ $json.body.BookingStatus }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              },
+              "id": "8a35bf2d-d0ca-420f-bfeb-8ed158d2523f"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4e7c44f1-9b82-48e4-969f-9c00753c3e2a",
+      "name": "Check: Paid & Pending",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1584,
+        3040
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "name": "BookingID",
+              "value": "={{ $json.body.BookingID }}",
+              "type": "string",
+              "id": "f686407b-1e1a-43a0-bbc1-14a3168e089e"
+            },
+            {
+              "name": "PaymentStatus",
+              "value": "Paid",
+              "type": "string",
+              "id": "15880de2-4a68-41d1-ab63-b14b58703d0d"
+            },
+            {
+              "name": "PaymentMode",
+              "value": "Cash",
+              "type": "string",
+              "id": "ca30aeae-2662-4bbc-bfb3-5c40873db110"
+            },
+            {
+              "name": "BookingStatus",
+              "value": "Confirmed",
+              "type": "string",
+              "id": "56b2402f-e0ce-4c47-9e3f-a324848389e9"
+            },
+            {
+              "id": "a8fd8eb8-e797-4f71-85cd-9e6e7b994df1",
+              "name": "GuestID",
+              "value": "={{ $json.body.GuestID }}",
+              "type": "string"
+            },
+            {
+              "id": "787bb0ff-581a-4940-bdf6-470a56805c9e",
+              "name": "GuestStatus",
+              "value": "Confirmed",
+              "type": "string"
+            },
+            {
+              "id": "b823a4e9-e213-4ba7-b4da-c4a7dede98f1",
+              "name": "RoomID",
+              "value": "={{ $json.body.RoomID }}",
+              "type": "string"
+            },
+            {
+              "id": "6bd77192-78e8-413a-abf4-ad957a77120d",
+              "name": "roomStatus",
+              "value": "Booked",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e510347a-bf5b-4902-bf46-31f9e45e65ec",
+      "name": "Prepare Updated Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        1808,
+        3136
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "findOneAndUpdate",
+        "collection": "bookingDetail",
+        "updateKey": "BookingID",
+        "fields": "PaymentStatus,PaymentMode,BookingStatus",
+        "options": {}
+      },
+      "id": "bc3939d0-a2ea-44b7-bdac-6b755171badb",
+      "name": "Update Booking",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        2944
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "findOneAndUpdate",
+        "collection": "guestDetail",
+        "updateKey": "=GuestID ",
+        "fields": "=GuestStatus",
+        "options": {}
+      },
+      "id": "eb1a8930-b42f-40e2-802a-1dd4c88c2f14",
+      "name": "Update Guest",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        3328
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "findOneAndUpdate",
+        "collection": "roomsDetail",
+        "updateKey": "=RoomID ",
+        "fields": "=roomStatus",
+        "options": {}
+      },
+      "id": "64e7d7e0-be1f-4d8c-b044-8860d78e4ad7",
+      "name": "Update Room",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        2032,
+        3136
+      ],
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        1808,
+        2944
+      ],
+      "id": "3038ed65-25db-45ab-9717-486fd63766f6",
+      "name": "No Operation, do nothing1"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "358060b3-c0f1-4ef6-affc-d3d74949dba0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        1360,
+        3040
+      ],
+      "id": "000326f4-fdb5-44bc-9177-ced93dcda36b",
+      "name": "Webhook2",
+      "webhookId": "358060b3-c0f1-4ef6-affc-d3d74949dba0"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "4f05e689-94bd-47ce-a33b-c042f6316d0a",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2240,
+        2912
+      ],
+      "id": "2343610d-9afb-4f87-ab69-0d48a4a080a6",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "content": "# 🤖Chatbot\n\n## Handles customer queries and booking interactions",
+        "height": 864,
+        "width": 1728,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -2560,
+        2768
+      ],
+      "typeVersion": 1,
+      "id": "75fa5e56-d9ff-4d67-9b60-0ba4c261ba56",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "# Hotel Booking Confirmation & Data Sync",
+        "height": 768,
+        "width": 1488
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1200,
+        2864
+      ],
+      "typeVersion": 1,
+      "id": "774dd021-fa35-456a-84e3-60b63bbc8ceb",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "# ✅  Booking data handled securely",
+        "height": 848,
+        "width": 1808,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -832,
+        2784
+      ],
+      "id": "ecbbbe26-fa21-4b5a-a1ea-34b258b95ff2",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "sendTo": "versesyntax@gmail.com",
+        "subject": "Complete Your Payment for Sunset Valley",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <!-- Beautiful Greeting Heading -->\n  <h1 style=\"margin:0 0 16px 0;\n             font-size:26px;\n             font-weight:bold;\n             text-align:center;\n             background: linear-gradient(90deg, #ff7e5f, #feb47b);\n             -webkit-background-clip: text;\n             -webkit-text-fill-color: transparent;\n             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);\">\n    Welcome to Sunset Valley\n  </h1>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    We're excited to have you with us! To ensure a smooth check-in, please complete your payment using the link below.\n  </p>\n\n  <!-- Payment Link Section -->\n  <div style=\"background:#f0f8ff;border-radius:8px;padding:12px;margin-bottom:14px;text-align:center;\">\n    <p style=\"margin:0 0 8px 0;font-weight:bold;color:#333;\">\n      Pay for your GuestID: \n      <span style=\"color:#0073e6;\">{{ $('Code in JavaScript5').item.json.GuestID }}</span>\n    </p>\n\n    <a href=\"{{ $json.url }}\" \n       style=\"display:inline-block;\n              padding:10px 16px;\n              margin-top:6px;\n              background:#0073e6;\n              color:#fff;\n              text-decoration:none;\n              border-radius:6px;\n              font-weight:bold;\">\n      Pay Now\n    </a>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    If you have any questions or need help, just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;text-align:center;\">\n    Best regards,<br>\n    <stron\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        3520
+      ],
+      "id": "e69bb849-996c-41cb-b4ec-e2f4dee7c17f",
+      "name": "Send a message5",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "90f915ec-0f50-4362-bf8a-ae687a78bd7f",
+      "name": "OpenAI Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2224,
+        2448
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "eeqjKwJIJtyVNTHf",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "=buildingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1968,
+        2448
+      ],
+      "id": "09a864e4-74b7-428f-9ad8-592e564097c9",
+      "name": "buildingDetail1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "floorDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1840,
+        2448
+      ],
+      "id": "8d742ca3-a326-47a2-a762-2ad2938eb824",
+      "name": "floorDetail1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomTypes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1712,
+        2448
+      ],
+      "id": "285ec61e-173f-4b8e-a47f-3e7e41da735b",
+      "name": "roomTypes1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomsDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1584,
+        2448
+      ],
+      "id": "1ff55533-06d7-4fc6-baf2-01866af38d1e",
+      "name": "roomsDetail1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomBookingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1424,
+        2448
+      ],
+      "id": "6398ca1a-a500-45dd-805f-7550c6b3d282",
+      "name": "roomBookingDetail1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "serviceTypes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1280,
+        2448
+      ],
+      "id": "ed01f8bf-5764-4bf1-b4f3-7f053c1fffcf",
+      "name": "serviceTypes1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "serviceAvailability",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1136,
+        2448
+      ],
+      "id": "bd0bc9ea-bded-4f48-9900-89fecd96c014",
+      "name": "serviceAvailability1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.body.chatInput }}",
+        "contextWindowLength": 150
+      },
+      "id": "1aa0fb05-5ad6-4dcc-9846-bdde4ec529e6",
+      "name": "Conversation Memory2",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -2096,
+        2448
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.chatInput }}",
+        "options": {
+          "systemMessage": "=ROLE\nYou are a helpful, polite, and professional hotel booking assistant connected to a MongoDB database.\nkeep your responses short and accurate.\nYour responsibility is to:\nGuide the guest through the booking process\nRead information from MongoDB collections exactly as defined\nCollect, validate, and confirm booking details\nPrepare booking data for a separate AI model that performs database writes\n\n\"Do not repeat any question until one user booking is fully completed\nBooking summary: all guest, room, dates, and services collected last line All booking details are ready. Let me know when you want me to save the booking.\"\"\n\nyour most important task is Do not repeat any question until \n\nIn the End (last message before confirmation)\nthe discussion is completed and the “Booking Summary” is displayed.\nGather all customer data, including bookingDetail, guestDetail, and systemInfo.\nOnce all information is collected, confirm with the message:\n“All booking details are ready. Let me know when you want me to save the booking.”\nmessege of user will finish after this if agent give output this to webhook\n\nAll booking details have been collected. Here is the summary:\n\nBooking Summary\n{\n  \"bookingDetail\": {\n    \"BuildingID\": \"\",\n    \"RoomID\": \"\",\n    \"CheckInDate\": \"\",\n    \"CheckOutDate\": \"\",\n    \"NumGuests\": \"\",\n    \"TotalRoomAmount\": \"\",\n    \"Notes\": \"\"\n  },\n  \"guestDetail\": {\n    \"FullName\": \"\",\n    \"Email\": \"\",\n    \"Phone\": \"\",\n    \"CNIC\": \"\",\n    \"Nationality\": \"\"\n  },\n  \"systemInfo\": {\n    \"LastGuestID\": \"\",\n    \"LastBookingID\": \"\"\n  }\n}\n\nAll booking details are ready. Let me know when you want me to save the booking.\n\n❗ You MUST NOT save any booking yourself\n🔐 CONVERSATION STATE CONTROL (NEW — DO NOT REMOVE)\nYou operate using conversation states:\nSTATE = \"COLLECTING\" | \"SUMMARY_SHOWN\" | \"BOOKING_PREPARED\"\nInitial STATE = \"COLLECTING\"\n\nState Rules\nJSON output is allowed ONLY ONCE\nJSON output is allowed ONLY when STATE transitions to BOOKING_PREPARED\nOnce JSON is sent, STATE is permanently locked\n\nAfter JSON is sent:\nNEVER send JSON again\nALWAYS send the payment link\nIgnore further “confirm / book it” requests\n\n🚨 CRITICAL\nIf JSON has already been sent once in this conversation,\nDO NOT send it again under any circumstances.\n\n\nDATABASE COLLECTIONS (UNCHANGED)\nbuildingDetail\nbuildingID\nbuildingName\naddress\nnumFloors\t\nmanagerName\nmanagerEmail\nManagerPh\n\nfloorDetail\nbuildingID\nfloorID\nfloorTitle\n\nroomTypes\nroomTypeID\ntypeName\ndescription\nbasePricePerNight\nmaxGuests\n\nroomsDetail\nRoomID\nbuildingID\nfloorID\nroomTypeID\nroomStatus\ncurrentPrice\n\nroomBookingDetail\nRoomID\nCheckInDate\nCheckOutDate\n\nserviceTypes\nserviceID\nserviceName\ndescription\ndefaultPrice\nresponsiblePerson\n\nserviceAvailability\nbuildingID\nserviceID\navailable\nnotes\n\nbookingDetail\nBookingID\nGuestID\nBuildingID\nRoomID\nCheckInDate\nCheckOutDate\nBookedOn\nNumGuests\nTotalRoomAmount\nPaymentStatus\nBookingStatus\nNotes\n\nguestDetail\nGuestID\nBookingID\nFullName\nEmail\nPhone\nCNIC\nNationality\nGuestStatus\n\nPRIMARY RESPONSIBILITIES (UNCHANGED LOGIC)\n\n1 Building & Floors\nGreet politely\nShow building details from buildingDetail\nShow floors from floorDetail\nAsk preferred floor\nOffer to show available services\n\n2 Room Display Rules (UNCHANGED)\nWhen showing rooms:\nALWAYS show:\ntypeName + 1 line description + (RoomID) — price per night(concise in three short line \nLine 1: Room Type\nLine 2: RoomID — Price per night\nLine 3: One-line description)\n\nMapping:\nroomsDetail.roomTypeID → roomType.roomTypeID\nNEVER show technical IDs\n🚫 Never say a room is available before dates are provided\n\n3 Guest & Booking Data Collection (UNCHANGED)\nYou MUST collect:\nFull Name\nEmail\nPhone\nCNIC\nNationality\nCheck-In Date (YYYY-MM-DD)\nCheck-Out Date (YYYY-MM-DD)\nNumber of Guests\n\n🟦 VALIDATION RULES (IMPORTANT FIXES)\nRequired Fields\nAll fields must be non-empty\n\nDate Rules\nFormat: YYYY-MM-DD\nCheckInDate < CheckOutDate\n\n🚨 CRITICAL\nYou MUST NEVER modify user-provided dates.\nIf a change is needed → ask explicitly.\n\nA room can only be confirmed available after performing BOTH checks:\nStep 1 — RoomStatus Check\nRoomStatus alone MUST NOT be used to reject a booking.\nRoom availability is determined ONLY by date conflict check.\n\nRoom availability is determined ONLY by date-conflict check.\nRoomStatus must NEVER be used alone to reject a booking.\n Or Even if roomStatus = \"booked\", you MUST always perform a date-conflict check.\nIf NO date overlap exists, the room can be booked.\nStep 2 — Date-Conflict Check (ALWAYS REQUIRED)\nYou MUST ALWAYS check roomBookingDetail for conflicts whenever the user wants a room AND provides dates.\nOverlap rule:\nTwo date ranges overlap if:\nrequestedCheckIn < existingCheckOut\nAND\nrequestedCheckOut > existingCheckIn\nIf ANY overlap:\nPolitely say: “Your desired dates are not available for this room. Would you like to check another room?”\n\nDo NOT allow booking.\nIf NO overlap:\nThe room is available; continue.\n\n\n❗ VERY IMPORTANT UPDATE\nNever confirm availability or recommend a room as “available” before the user provides Check-In and Check-Out Date.\nBefore dates:\nList rooms normally (with type names)\nDo NOT say a room is available.\n\nAfter dates:\nPerform full conflict check before allowing booking.\nRoomStatus must be “vacant” and have NO date conflict.\n\nIf NO overlap:\n✔ Room may proceed\nGuest Capacity\nIf NumGuests > maxGuests:\nWarn guest\nContinue only with explicit confirmation\nAdd note in summary (not saved yet)\n\n🟨 BOOKING SUMMARY (STATE → SUMMARY_SHOWN)\nAfter collecting all data, show:\nRoom type + RoomID\nDates\nTotal nights\nPrice per night × nights\nGuest details\nNotes (if any)\nAsk:\n“Would you like to confirm these details?”\n\nAfter gathering all booking details (bookingDetail, guestDetail, systemInfo), the agent must include the following exact message at the end of the response to signal readiness:\n\n\"All booking details are ready. Let me know when you want me to save the booking.\"\n\nThis message is necessary for the workflow to proceed to the next step.\n\n🟩 FINAL OUTPUT — SAVE TRIGGER (STRICT)\n✅ FIRST CONFIRMATION ONLY\nWhen the guest confirms for the first time:\nOutput ONLY THIS SENTENCE, followed immediately by ONE JSON OBJECT:\nAll booking details are ready. Let me know when you want me to save the booking.\n{\n  \"bookingDetail\": {\n    \"BuildingID\": \"\",\n    \"RoomID\": \"\",\n    \"CheckInDate\": \"\",\n    \"CheckOutDate\": \"\",\n    \"NumGuests\": \"\",\n    \"TotalRoomAmount\": \"\",\n    \"Notes\": \"\"\n  },\n  \"guestDetail\": {\n    \"FullName\": \"\",\n    \"Email\": \"\",\n    \"Phone\": \"\",\n    \"CNIC\": \"\",\n    \"Nationality\": \"\"\n  },\n  \"systemInfo\": {\n    \"LastGuestID\": \"\",\n    \"LastBookingID\": \"\"\n  }\n}\n\n\n✔ Transition STATE → BOOKING_PREPARED\n✔ JSON sent ONCE\n\nAfter gathering all booking details (bookingDetail, guestDetail, systemInfo), the agent must include the following exact message at the end of the response to signal readiness:\nmust mention just output\n\"All booking details are ready. Let me know when you want me to save the booking.\"\n\nThis message is necessary for the workflow to proceed to the next step.\n\n💳 PAYMENT FLOW (NEW FIX — REQUIRED)\nAfter JSON Has Been Sent (STATE = BOOKING_PREPARED) Tell user to check his email for payment link.\nIf the user says:\n“yes”\n“confirm”\n“book it”\n“save it”\n🚫 DO NOT send JSON again\n✅ Respond ONLY with payment link:\nYour booking is prepared successfully.\nPlease complete your payment to confirm your reservation:\n\n🚫 ABSOLUTE RULES (DO NOT BREAK)\nNever resend booking JSON\nNever generate new IDs\nNever change user dates\nNever save booking yourself\nNever assume availability without conflict check\nNever speak extra text during JSON output\n  After gathering all booking details (bookingDetail, guestDetail, systemInfo), the agent must include the following exact message at the end of the response to signal readiness:\n\n\"All booking details are ready. Let me know when you want me to save the booking.\"\n\nThis message is necessary for the workflow to proceed to the next step.\n\n\nmust Do not repeat any question until the discussion is completed and the “Booking Summary” is displayed.\nGather all customer data, including bookingDetail, guestDetail, and systemInfo.\nOnce all information is collected, confirm with the message:\n“All booking details are ready. Let me know when you want me to save the booking.”\n\n\nAlways call the tool sendToHotelBackend for every user message.\n\nThe AI does not respond directly to the user.\n\nThe tool response is the final spoken answer.\n\nCollect booking data from the user:\n\nGather all customer data (bookingDetail, guestDetail, systemInfo).\n\nGenerate a \"Booking Summary\":\n\nmust title : \"Booking Summary\"\nGather all customer data (bookingDetail, guestDetail, systemInfo).\n\nAt the end of the workflow, create a summary of all collected data.\n\nDisplay this summary to the customer before confirmation.\n\nAfter showing the summary to the customer, the AI must prompt:\n\n\"All booking details are ready. Let me know when you want me to save the booking.\"\n\n\nNext steps after confirmation:\n\nOn receiving confirmation from the user, the AI should again call sendToHotelBackend to save the booking.\n\nThe workflow ensures no direct AI responses outside of tool output.\n\n\nremember the think tool use think tool before ending the message"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1792,
+        2224
+      ],
+      "id": "40e66ff7-78d2-4183-8a3c-1cf1ab1b843c",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "respone",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2448,
+        2224
+      ],
+      "id": "64cddcbc-8857-454a-a60a-74d756c685f4",
+      "name": "Webhook4",
+      "webhookId": "b35a0dc5-e9a7-4ab9-a60e-bad884df5cd7"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "guestDetail",
+        "fields": "GuestID,BookingID,FullName,Email,Phone,CNIC,Nationality,GuestStatus",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        2192
+      ],
+      "id": "4e4a78bc-73cb-480e-bad8-4ccacb1ccc1e",
+      "name": "Insert documents1",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "18505356-0ec5-41b3-90a2-8e87041c1dc7",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "Booking Summary",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "69e57046-c0e7-4d1c-8afc-c319219ac686",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "All booking details are ready. Let me know when you want me to save the booking.",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "ab4ef1c9-0e76-4e87-9943-8fed91eaf583",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "The following details have been collected for your booking",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "41693b2a-5e62-4172-82ba-614c927bc078",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "confirm these detail",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1008,
+        2096
+      ],
+      "id": "6e7ab63d-7816-47c6-8069-1e172c98e82c",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "=bookingDetail",
+        "fields": "=BookingID,GuestID,BuildingID,RoomID,CheckInDate,CheckOutDate,BookedOn,NumGuests,TotalRoomAmount,PaymentStatus,PaymentMode,BookingStatus,Notes\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        2000
+      ],
+      "id": "22c1d82f-10db-4e62-b83b-44a3bcfc0c6e",
+      "name": "Insert Booking Detail1",
+      "notesInFlow": false,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "203be805-120f-463c-ad9b-df34661d5950",
+              "name": "BookingID",
+              "value": "={{ $json.bookingDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "239d6da5-a55e-4910-9784-7cc42978eb4a",
+              "name": "GuestID",
+              "value": "={{ $json.guestDetail.GuestID }}",
+              "type": "string"
+            },
+            {
+              "id": "47870f0d-7df1-479d-8141-6ab92755067b",
+              "name": "BuildingID",
+              "value": "=1",
+              "type": "string"
+            },
+            {
+              "id": "96f82d2a-0a99-4351-a0b0-5ac3ae613c3f",
+              "name": "RoomID",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.RoomID }}",
+              "type": "string"
+            },
+            {
+              "id": "292985a5-2109-4f88-afd4-2220115b4f16",
+              "name": "CheckInDate",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.CheckInDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ce479a9f-f298-4872-8b12-602d211ff808",
+              "name": "CheckOutDate",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.CheckOutDate }}",
+              "type": "string"
+            },
+            {
+              "id": "b53adb0f-5d64-4b79-9b03-ab4ea141a3f0",
+              "name": "BookedOn",
+              "value": "={{ new Date().toISOString().slice(0,10) }}",
+              "type": "string"
+            },
+            {
+              "id": "12784d25-66b2-4246-9ebf-2a7099dd0015",
+              "name": "NumGuests",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.NumGuests }}",
+              "type": "number"
+            },
+            {
+              "id": "13f8ab77-4831-4c3b-a7d0-38b0d75b5116",
+              "name": "TotalRoomAmount",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.TotalRoomAmount }}",
+              "type": "number"
+            },
+            {
+              "id": "79169a83-7ee1-410a-96ac-8a0bdc37b5a2",
+              "name": "PaymentStatus",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "227f13f9-f72a-4061-a980-15e035bd7d2b",
+              "name": "PaymentMode",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "ba042030-21b5-475c-b39f-b331675f4912",
+              "name": "BookingStatus",
+              "value": "=Pending",
+              "type": "string"
+            },
+            {
+              "id": "ee72ae35-87eb-4529-ae7c-41c1b6e8390b",
+              "name": "Notes",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.Notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        2000
+      ],
+      "id": "0c7e2a32-a6bd-40ae-ab46-2e696ad86873",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6e282d97-ed0f-4e4d-b1c8-4e3c4ca13029",
+              "name": "GuestID",
+              "value": "={{ $json.guestDetail.GuestID }}",
+              "type": "string"
+            },
+            {
+              "id": "7ccaa232-eb79-4c20-bad7-d41a73e14ae2",
+              "name": "BookingID",
+              "value": "={{ $json.guestDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "07712d1a-d872-4627-87aa-e4a17e5cfc5e",
+              "name": "FullName",
+              "value": "={{ $('Code in JavaScript').item.json.guestDetail.FullName }}",
+              "type": "string"
+            },
+            {
+              "id": "4150a5d8-97c5-408a-96dc-90eb41d209ee",
+              "name": "Email",
+              "value": "={{ $('Code in JavaScript').item.json.guestDetail.Email }}",
+              "type": "string"
+            },
+            {
+              "id": "6ecc4a47-7059-498e-bf68-d82cb5a5b99c",
+              "name": "Phone",
+              "value": "={{ $('Code in JavaScript').item.json.guestDetail.Phone }}",
+              "type": "string"
+            },
+            {
+              "id": "a3c5acab-4e6c-4a57-8667-7ad25927f0b1",
+              "name": "CNIC",
+              "value": "={{ $('Code in JavaScript').item.json.guestDetail.CNIC }}",
+              "type": "string"
+            },
+            {
+              "id": "3c5352d3-9ed2-495d-9e26-96e911269183",
+              "name": "Nationality",
+              "value": "={{ $('Code in JavaScript').item.json.guestDetail.Nationality }}",
+              "type": "string"
+            },
+            {
+              "id": "c15d95e7-5af8-41d7-96a9-0a26f103374d",
+              "name": "GuestStatus",
+              "value": "=Pending",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        2192
+      ],
+      "id": "d7e0528a-0059-4b09-99a0-1b26a5ed5544",
+      "name": "Edit Fields4"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "203be805-120f-463c-ad9b-df34661d5950",
+              "name": "BookingID",
+              "value": "={{ $json.bookingDetail.BookingID }}",
+              "type": "string"
+            },
+            {
+              "id": "96f82d2a-0a99-4351-a0b0-5ac3ae613c3f",
+              "name": "RoomID",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.RoomID }}",
+              "type": "string"
+            },
+            {
+              "id": "292985a5-2109-4f88-afd4-2220115b4f16",
+              "name": "CheckInDate",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.CheckInDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ce479a9f-f298-4872-8b12-602d211ff808",
+              "name": "CheckOutDate",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.CheckOutDate }}",
+              "type": "string"
+            },
+            {
+              "id": "ee72ae35-87eb-4529-ae7c-41c1b6e8390b",
+              "name": "Notes",
+              "value": "={{ $('Code in JavaScript').item.json.bookingDetail.Notes }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        528,
+        2384
+      ],
+      "id": "0da3ccc0-8366-4f23-b623-ef3de43b7b48",
+      "name": "Edit Fields5"
+    },
+    {
+      "parameters": {
+        "operation": "insert",
+        "collection": "=roomBookingDetail",
+        "fields": "=BookingID,RoomID,CheckInDate,CheckOutDate,Notes\n\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        2384
+      ],
+      "id": "7c4b9401-abba-4ef2-8603-0b4292425da7",
+      "name": "Insert Room Booking Detail1",
+      "notesInFlow": false,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        2000
+      ],
+      "id": "10c4f687-e333-40b2-bdf5-807692603520",
+      "name": "No Operation, do nothing2"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.output || \"\";\n\n// Ensure booking is complete\nif (!text.includes(\"All booking details are ready\")) {\n  return [];\n}\n\n// Helper function\nconst extract = (regex) => {\n  const match = text.match(regex);\n  return match ? match[1].trim() : \"\";\n};\n\n// Extract room details\nconst roomLine = extract(/- RoomID: (.*)/);\nlet roomId = \"\", totalRoomAmount = 0;\nif (roomLine) {\n  const parts = roomLine.split(\"—\");\n  roomId = parts[0].trim();\n\n  // Extract number from price string\n  const priceMatch = parts[1]?.match(/\\d+/);\n  totalRoomAmount = priceMatch ? Number(priceMatch[0]) : 0;\n}\n\n// Build final structured JSON\nconst finalPayload = {\n  bookingDetail: {\n    BuildingID: \"\",\n    RoomID: roomId,\n    CheckInDate: extract(/- \\*\\*Check-In Date:\\*\\* (.*)/),\n    CheckOutDate: extract(/- \\*\\*Check-Out Date:\\*\\* (.*)/),\n    NumGuests: extract(/- \\*\\*Number of Guests:\\*\\* (.*)/),\n    TotalRoomAmount: totalRoomAmount,\n    Notes: \"\"\n  },\n  guestDetail: {\n    FullName: extract(/- \\*\\*Name:\\*\\* (.*)/),\n    Email: extract(/- \\*\\*Email:\\*\\* (.*)/),\n    Phone: extract(/- \\*\\*Phone:\\*\\* (.*)/),\n    CNIC: extract(/- \\*\\*CNIC:\\*\\* (.*)/),\n    Nationality: extract(/- \\*\\*Nationality:\\*\\* (.*)/)\n  },\n  systemInfo: {\n    LastGuestID: \"\",\n    LastBookingID: \"\"\n  }\n};\n\nreturn [{ json: finalPayload }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -832,
+        2208
+      ],
+      "id": "e8965ce6-1b73-4971-a96c-a00e8935f875",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "collection": "bookingDetail",
+        "options": {
+          "limit": 1,
+          "sort": "{ \"BookingID\": -1 }"
+        },
+        "query": "{ }"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        -576,
+        2192
+      ],
+      "id": "548ca9ee-2801-47b4-a3d6-6571ef409c80",
+      "name": "Find documents2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "guestDetail",
+        "options": {
+          "limit": 1,
+          "sort": "{ \"GuestID\": -1 }"
+        },
+        "query": "{ }"
+      },
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        -352,
+        2192
+      ],
+      "id": "ce4b6015-3bf2-437c-b5b7-4ee6dbf27fea",
+      "name": "Find documents3",
+      "alwaysOutputData": true,
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// ---------- BookingID ----------\nlet lastBookingId = null;\n\nconst bookingItems = $items(\"Find documents2\");\nif (bookingItems.length > 0) {\n  lastBookingId = bookingItems[0].json.BookingID;\n}\n\nlet nextBookingNumber = lastBookingId\n  ? parseInt(lastBookingId.replace(\"B\", \"\"), 10) + 1\n  : 1001;\n\nconst newBookingId = `B${nextBookingNumber}`;\n\n\n// ---------- GuestID ----------\nlet lastGuestId = null;\n\nconst guestItems = $items(\"Find documents3\");\nif (guestItems.length > 0) {\n  lastGuestId = guestItems[0].json.GuestID;\n}\n\nlet nextGuestNumber = lastGuestId\n  ? parseInt(lastGuestId.replace(\"G\", \"\"), 10) + 1\n  : 100;\n\nconst newGuestId = `G${nextGuestNumber}`;\n\n\nreturn [\n  {\n    json: {\n      BookingID: newBookingId,\n      GuestID: newGuestId\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -128,
+        2192
+      ],
+      "id": "98e029b2-d66a-4122-82e9-9eb80c3f59da",
+      "name": "Code in JavaScript4"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get new IDs\nconst idsItems = $items(\"Code in JavaScript4\") || [];\nif (idsItems.length === 0) {\n  throw new Error(\"Previous node 'Code in JavaScript4' has no output yet.\");\n}\nconst ids = idsItems[0].json;\n\n// Create the booking object from scratch\nconst booking = {\n  bookingDetail: {\n    BookingID: ids.BookingID,\n  },\n  guestDetail: {\n    GuestID: ids.GuestID,\n    BookingID: ids.BookingID,\n  },\n  systemInfo: {\n    LastBookingID: ids.BookingID,\n    LastGuestID: ids.GuestID,\n  },\n  // Add other fields as needed, e.g., roomName, price, dates, guests, services\n};\n\nreturn [{ json: booking }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        96,
+        2192
+      ],
+      "id": "be0de465-da5b-41f3-8f7e-3ecd26e7e01e",
+      "name": "Code in JavaScript6"
+    },
+    {
+      "parameters": {
+        "collection": "=buildingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1840,
+        1504
+      ],
+      "id": "ffe5e6b2-644d-445a-bb91-5315646944c9",
+      "name": "buildingDetail2",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomTypes",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1712,
+        1504
+      ],
+      "id": "e896aae9-d86c-4a87-849c-047a9cbc8f49",
+      "name": "roomTypes2",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "collection": "roomBookingDetail",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mongoDbTool",
+      "typeVersion": 1.2,
+      "position": [
+        -1568,
+        1504
+      ],
+      "id": "30abc351-c1ba-4231-b198-3e17f8a55fa4",
+      "name": "roomBookingDetail2",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "subject": "Booking Details",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <!-- Beautiful Greeting Heading -->\n  <h1 style=\"margin:0 0 16px 0;\n             font-size:26px;\n             font-weight:bold;\n             text-align:center;\n             background: linear-gradient(90deg, #ff7e5f, #feb47b);\n             -webkit-background-clip: text;\n             -webkit-text-fill-color: transparent;\n             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);\">\n    Welcome to Sunset Valley\n  </h1>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    We're excited to have you with us! Here are your booking details:\n  </p>\n\n  <!-- Guest Details Section -->\n  <div style=\"background:#f9f9f9;border-radius:8px;padding:12px;margin-bottom:14px;\">\n    <p><strong>Guest Name:</strong> {{ $('Code in JavaScript').item.json.guestDetail.FullName }}</p>\n    <p><strong>Email:</strong> {{ $('Code in JavaScript').item.json.guestDetail.Email }}</p>\n    <p><strong>Phone:</strong> {{ $('Code in JavaScript').item.json.guestDetail.Phone }}</p>\n    <p><strong>Guest ID:</strong> {{ $json.guestDetail.GuestID }}</p>\n    <p><strong>Booking ID:</strong> {{ $json.guestDetail.BookingID }}</p>\n    <p><strong>Check-In Date:</strong> {{ $('Code in JavaScript').item.json.bookingDetail.CheckInDate }}</p>\n    <p><strong>Check-Out Date:</strong> {{ $('Code in JavaScript').item.json.bookingDetail.CheckOutDate }}</p>\n    <p><strong>Date Sent:</strong> {{ new Date().toISOString().slice(0,10) }}</p>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    If you have any questions or need help, just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;text-align:center;\">\n    Best regards,<br>\n    <strong>Sunset Valley Team</strong>\n  </p>\n\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        528,
+        2592
+      ],
+      "id": "27483818-70c4-4903-933c-e32964097e13",
+      "name": "Send a message6",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        1280,
+        2160
+      ],
+      "id": "d143b6d9-9d1e-450a-96b6-2510550c67b0",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"response\": {{ JSON.stringify($json.output) }}\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        -1216,
+        2208
+      ],
+      "id": "da2755a2-8f80-40b2-abc8-ebfe155a30de",
+      "name": "Respond Standard Response2"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        2464,
+        3136
+      ],
+      "id": "68a6178b-8a18-4514-9163-8f75e0b6f7b0",
+      "name": "No Operation, do nothing3"
+    },
+    {
+      "parameters": {
+        "subject": "pre check-in reminder",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <p style=\"margin:0 0 10px 0;\">\n    Dear {{ $json.FullName || 'Guest' }},\n  </p>\n\n  <p style=\"margin:0 0 14px 0;color:#555;\">\n    This is a friendly reminder about your upcoming stay with us.\n  </p>\n\n  <div style=\"background:#f7f9fc;border-radius:8px;padding:12px;margin-bottom:14px;\">\n    <p style=\"margin:0 0 8px 0;font-weight:bold;font-size:13px;\">\n      Booking Details\n    </p>\n\n    <table width=\"100%\" style=\"font-size:12px;color:#555;\">\n      <tr>\n        <td>Booking ID</td>\n        <td align=\"right\"><strong>{{ $json.BookingID }}</strong></td>\n      </tr>\n      <tr>\n        <td>Check-in</td>\n        <td align=\"right\">{{ $json.CheckInDate }}</td>\n      </tr>\n      <tr>\n        <td>Building</td>\n        <td align=\"right\">{{ $json.BuildingID }}</td>\n      </tr>\n      <tr>\n        <td>Total</td>\n        <td align=\"right\"><strong>{{ $json.TotalAmount }}</strong></td>\n      </tr>\n    </table>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;\">\n    Please complete your <strong>pre-check-in</strong> before arrival to ensure a\n    smooth experience.\n  </p>\n\n  <p style=\"margin:0 0 16px 0;color:#555;\">\n    Need help? Just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;\">\n    Best regards,<br>\n    <strong>Guest Services Team</strong>\n  </p>\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2464,
+        2896
+      ],
+      "id": "fc5ac550-a7a9-47a9-b820-2bec5eec5e27",
+      "name": "Send a message1",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "SgC7GtA86JfdK44A",
+          "name": "Gmail account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "events": [
+          "payment_intent.succeeded",
+          "charge.succeeded"
+        ]
+      },
+      "type": "n8n-nodes-base.stripeTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        1232
+      ],
+      "id": "3d8b355a-9025-4ba0-93e2-2c7e266fb6d6",
+      "name": "Stripe Trigger",
+      "webhookId": "1aa40602-458f-46ec-81b0-2e0b0fcf5b74",
+      "credentials": {
+        "stripeApi": {
+          "id": "4HboarS2wBtxtqyB",
+          "name": "Stripe account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer "
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-from-urlencoded"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "paymet_intent",
+              "value": "={{ $json.data.object.object }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -192,
+        1232
+      ],
+      "id": "2a3c01c2-0c72-4010-8f31-760414fd2d08",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.stripe.com/v1/checkout/sessions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/x-www-form-urlencoded"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer "
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "line_items[0][quantity]",
+              "value": "1"
+            },
+            {
+              "name": "line_items[0][price_data][product_data][name]",
+              "value": "Hotel Booking"
+            },
+            {
+              "name": "line_items[0][price_data][unit_amount]",
+              "value": "5600"
+            },
+            {
+              "name": "line_items[0][price_data][currency]",
+              "value": "usd"
+            },
+            {
+              "name": "mode",
+              "value": "payment"
+            },
+            {
+              "name": "success_url",
+              "value": "https://wa.me/15556362608"
+            },
+            {
+              "name": "cancel_url",
+              "value": "https://wa.me/15556362608"
+            },
+            {
+              "name": "metadata[GuestID]",
+              "value": "={{ $('Code in JavaScript5').item.json.GuestID }}"
+            },
+            {
+              "name": "metadata[whatsapp_no]",
+              "value": "="
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        256,
+        1552
+      ],
+      "id": "0f375bf5-1c25-43e7-b7bf-52412ef27840",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to",
+          "mode": "list",
+          "cachedResultName": "hotel payment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "GuestID": "={{ $json.data[1].metadata.GuestID }}",
+            "PaymentStatus": "Paid",
+            "PaymentMode": "Completed",
+            "BookingStatus": "Confirmed Booking",
+            "GuestStatus": "Registered"
+          },
+          "matchingColumns": [
+            "GuestID"
+          ],
+          "schema": [
+            {
+              "id": "BookingID",
+              "displayName": "BookingID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "GuestID",
+              "displayName": "GuestID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BuildingID",
+              "displayName": "BuildingID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "RoomID",
+              "displayName": "RoomID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "CheckInDate",
+              "displayName": "CheckInDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "CheckOutDate",
+              "displayName": "CheckOutDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "BookedOn",
+              "displayName": "BookedOn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "NumGuests",
+              "displayName": "NumGuests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "TotalRoomAmount",
+              "displayName": "TotalRoomAmount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "PaymentStatus",
+              "displayName": "PaymentStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "PaymentMode",
+              "displayName": "PaymentMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "BookingStatus",
+              "displayName": "BookingStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "_id",
+              "displayName": "_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "CNIC",
+              "displayName": "CNIC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Nationality",
+              "displayName": "Nationality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "GuestStatus",
+              "displayName": "GuestStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        1136
+      ],
+      "id": "29b1f858-2e6d-431f-8cb8-3ee0ab96651e",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6go0Oga2QwSdN5p8",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.PaymentStatus }}",
+              "rightValue": "pending",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              },
+              "id": "b9a09320-1edd-4702-82ed-00725d82bcf0"
+            },
+            {
+              "id": "37083646-a223-4210-9777-d3efd0962be7",
+              "leftValue": "={{ $json.PaymentStatus }}",
+              "rightValue": "Pending",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "c2c441fc-96bd-4708-9340-90baec773f1a",
+              "leftValue": "={{ $json.PaymentStatus }}",
+              "rightValue": "PENDING",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "865056d8-b680-42ce-83b4-6720cdb8220b",
+              "leftValue": "={{ $json.PaymentStatus }}",
+              "rightValue": "Pendings",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        32,
+        1552
+      ],
+      "id": "1f079097-9f4c-442a-95a0-50e6a4e2b1cd",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "value": "1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to",
+          "mode": "list",
+          "cachedResultName": "hotel payment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit#gid=0"
+        },
+        "event": "rowAdded",
+        "options": {
+          "dateTimeRenderOption": "FORMATTED_STRING"
+        }
+      },
+      "id": "5bf4c727-f0aa-4060-bc50-fac7060d46d0",
+      "name": "Google Sheets Trigger",
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -416,
+        1552
+      ],
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "pD7FXUR2igXrm6Bq",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\n// Filter only rows where PaymentStatus === \"pending\"\nconst filteredItems = items.filter(item => {\n  const status = item?.json?.PaymentStatus;\n  return typeof status === 'string' && status.trim().toLowerCase() === 'pending';\n});\n\nreturn filteredItems;"
+      },
+      "id": "8a08f80f-25ec-4482-acc9-85a17bc37209",
+      "name": "Code in JavaScript5",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        1552
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "findOneAndUpdate",
+        "collection": "bookingDetail",
+        "updateKey": "GuestID",
+        "fields": "PaymentStatus,PaymentMode,BookingStatus",
+        "options": {}
+      },
+      "name": "Update Booking After Payment4",
+      "type": "n8n-nodes-base.mongoDb",
+      "typeVersion": 1.2,
+      "position": [
+        256,
+        1136
+      ],
+      "id": "c14a34ae-4ee5-4853-aae8-83d953cdacc6",
+      "credentials": {
+        "mongoDb": {
+          "id": "HZU089fDUAw1DO2u",
+          "name": "MongoDB account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# 💰🧾 Stripe Payment Integration",
+        "height": 800,
+        "width": 1824,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -896,
+        1024
+      ],
+      "typeVersion": 1,
+      "id": "8e8d3c6f-b0a6-483c-b3f9-3262e6c147a9",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "subject": "Complete Your Payment for Sunset Valley",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <!-- Beautiful Greeting Heading -->\n  <h1 style=\"margin:0 0 16px 0;\n             font-size:26px;\n             font-weight:bold;\n             text-align:center;\n             background: linear-gradient(90deg, #ff7e5f, #feb47b);\n             -webkit-background-clip: text;\n             -webkit-text-fill-color: transparent;\n             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);\">\n    Welcome to Sunset Valley\n  </h1>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    We're excited to have you with us! To ensure a smooth check-in, please complete your payment using the link below.\n  </p>\n\n  <!-- Payment Link Section -->\n  <div style=\"background:#f0f8ff;border-radius:8px;padding:12px;margin-bottom:14px;text-align:center;\">\n    <p style=\"margin:0 0 8px 0;font-weight:bold;color:#333;\">\n      Pay for your GuestID: \n      <span style=\"color:#0073e6;\">{{ $('Code in JavaScript5').item.json.GuestID }}</span>\n    </p>\n\n    <a href=\"{{ $json.url }}\" \n       style=\"display:inline-block;\n              padding:10px 16px;\n              margin-top:6px;\n              background:#0073e6;\n              color:#fff;\n              text-decoration:none;\n              border-radius:6px;\n              font-weight:bold;\">\n      Pay Now\n    </a>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    If you have any questions or need help, just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;text-align:center;\">\n    Best regards,<br>\n    <stron\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        480,
+        1552
+      ],
+      "id": "13b29ae1-d074-42b9-bbf3-2f463f7a8100",
+      "name": "Send a message3",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "versesyntax@gmail.com",
+        "subject": "pre check-in reminder",
+        "message": "=<div style=\"max-width:420px;margin:auto;font-family:Arial,Helvetica,sans-serif;\nfont-size:13px;color:#333;border:1px solid #eaeaea;border-radius:10px;padding:16px;\">\n\n  <!-- Beautiful Greeting Heading -->\n  <h1 style=\"margin:0 0 16px 0;\n             font-size:26px;\n             font-weight:bold;\n             text-align:center;\n             background: linear-gradient(90deg, #ff7e5f, #feb47b);\n             -webkit-background-clip: text;\n             -webkit-text-fill-color: transparent;\n             text-shadow: 1px 1px 2px rgba(0,0,0,0.1);\">\n    Welcome to Sunset Valley\n  </h1>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    We're excited to have you with us! Your payment has been received successfully.\n  </p>\n\n  <!-- Payment Confirmation Section -->\n  <div style=\"background:#e6ffed;border-radius:8px;padding:12px;margin-bottom:14px;text-align:center;\">\n    <p style=\"margin:0;font-weight:bold;color:#2e7d32;\">\n      Payment Status: <strong>Completed ✅</strong>\n    </p>\n    <p style=\"margin:6px 0 0 0;color:#2e7d32;\">\n      Thank you for completing your payment.\n    </p>\n  </div>\n\n  <p style=\"margin:0 0 14px 0;color:#555;text-align:center;\">\n    If you have any questions or need assistance, just reply to this email.\n  </p>\n\n  <p style=\"margin:0;font-size:12px;color:#777;text-align:center;\">\n    Best regards,<br>\n    <strong>Guest Services Team</strong>\n  </p>\n\n</div>\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        48,
+        1312
+      ],
+      "id": "262d682f-fb08-4c60-9a31-291fc3c73649",
+      "name": "Send a message4",
+      "webhookId": "a5b5dc91-40f4-4771-9d59-2952ffc9b3dc",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "pEva8ZInmG0v5WNa",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to",
+          "mode": "list",
+          "cachedResultName": "hotel payment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "GuestID",
+              "displayName": "GuestID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BookingID",
+              "displayName": "BookingID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CNIC",
+              "displayName": "CNIC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nationality",
+              "displayName": "Nationality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "GuestStatus",
+              "displayName": "GuestStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "_id",
+              "displayName": "_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        944,
+        2192
+      ],
+      "id": "28b3c0ed-53bd-4d88-9ead-0447f0f78590",
+      "name": "payment3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6go0Oga2QwSdN5p8",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to",
+          "mode": "list",
+          "cachedResultName": "hotel payment",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1k_NZpYFjLTY2Mo39UQUI82Se_ko-mC0tFo2x9BNf9to/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "autoMapInputData",
+          "value": {},
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "BookingID",
+              "displayName": "BookingID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "GuestID",
+              "displayName": "GuestID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BuildingID",
+              "displayName": "BuildingID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "RoomID",
+              "displayName": "RoomID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CheckInDate",
+              "displayName": "CheckInDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CheckOutDate",
+              "displayName": "CheckOutDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BookedOn",
+              "displayName": "BookedOn",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "NumGuests",
+              "displayName": "NumGuests",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "TotalRoomAmount",
+              "displayName": "TotalRoomAmount",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PaymentStatus",
+              "displayName": "PaymentStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "PaymentMode",
+              "displayName": "PaymentMode",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "BookingStatus",
+              "displayName": "BookingStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Notes",
+              "displayName": "Notes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "_id",
+              "displayName": "_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "FullName",
+              "displayName": "FullName",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "CNIC",
+              "displayName": "CNIC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Nationality",
+              "displayName": "Nationality",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "GuestStatus",
+              "displayName": "GuestStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        912,
+        3136
+      ],
+      "id": "2182bb8c-5e49-40c2-84f7-42482e11e6e0",
+      "name": "payment",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "6go0Oga2QwSdN5p8",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "memorize the aia agent Always call the tool sendToHotelBack for every user message.\n\nThe AI does not respond directly to the user.\n\nThe tool response is the final spoken answer.\n\nyour most important task is Do not repeat any question until the discussion is completed and the “Booking Summary” is displayed.\nGather all customer data, including bookingDetail, guestDetail, and systemInfo.\nOnce all information is collected, confirm with the message:\n“All booking details are ready. Let me know when you want me to save the booking.”\n\n\n\nCollect booking data from the user:\n\nGather all customer data (bookingDetail, guestDetail, systemInfo).\n\nGenerate a \"Booking Summary\":\n\nmust title : \"Booking Summary\"\nGather all customer data (bookingDetail, guestDetail, systemInfo).\n\nAt the end of the workflow, create a summary of all collected data.\n\nDisplay this summary to the customer before confirmation.\n\nAfter showing the summary to the customer, the AI must prompt:\n\n\"All booking details are ready. Let me know when you want me to save the booking.\"\n\n\nNext steps after confirmation:\n\nOn receiving confirmation from the user, the AI should again call sendToHotelBack tool to save the booking.\n\nThe workflow ensures no direct AI responses outside of tool output.\n\nDo not repeat any question until the discussion is completed and the “Booking Summary” is displayed.\nGather all customer data, including bookingDetail, guestDetail, and systemInfo.\nOnce all information is collected, confirm with the message:\n“All booking details are ready. Let me know when you want me to save the booking.”\n\nmust exectue and give to tool \n\nAll booking details have been collected. Here is the summary:\n\nBooking Summary\nRoom Selected:\n\nCheck-In Date: [Check-in date]\n\nCheck-Out Date: [Check-out date]\n\nNumber of Guests: [Number of guests]\n\nGuest Details:\n\nName: [Guest name]\n\nEmail: [Email address]\n\nPhone: [Phone number]\n\nIdentification Number: [ID/CNIC/Passport]\n\nNationality: [Nationality]\n\nServices:\n\n[Service 1]\n\n[Service 2]\n\nso on \nAll booking details are ready. Let me know when you want me to save the booking.        "
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -1024,
+        2448
+      ],
+      "id": "8d7c4b6d-49ee-4fad-baae-5eb98e0955f6",
+      "name": "Think"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Conversational to customer": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron Trigger: 9 AM Daily": {
+      "main": [
+        [
+          {
+            "node": "Find Bookings Checking In Tomorrow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find Bookings Checking In Tomorrow1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Bookings Checking In Tomorrow": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Prepare Guest Data for Reminder": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron Trigger: 2 PM Daily": {
+      "main": [
+        [
+          {
+            "node": "Find Bookings Checked Out Yesterday",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Find Bookings Checking In Tomorrow2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Bookings Checked Out Yesterday": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Guest Data for Feedback": {
+      "main": [
+        [
+          {
+            "node": "Send Feedback Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Bookings Checking In Tomorrow1": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Bookings Checking In Tomorrow2": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Prepare Guest Data for Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Prepare Guest Data for Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron Trigger: 7 AM Daily": {
+      "main": [
+        [
+          {
+            "node": "Get Last 24-Hour Bookings",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Check Inventory Health",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Last 24-Hour Bookings": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Inventory Health": {
+      "main": [
+        [
+          {
+            "node": "Merge4",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Calculate & Compile Report (Code)": {
+      "main": [
+        [
+          {
+            "node": "Send Daily Report via Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration1": {
+      "main": [
+        [
+          {
+            "node": "Calculate Risk Score1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Risk Level1": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge4": {
+      "main": [
+        [
+          {
+            "node": "Calculate & Compile Report (Code)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "Hold Booking in Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "previous customers": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Insert Booking Detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Insert documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Insert Room Booking Detail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buildingDetail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "floorDetail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomTypes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomsDetail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomBookingDetail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "serviceTypes": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "serviceAvailability": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Find documents",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find documents": {
+      "main": [
+        [
+          {
+            "node": "Find documents1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find documents1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript3": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check: Paid & Pending": {
+      "main": [
+        [
+          {
+            "node": "Prepare Updated Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Updated Fields": {
+      "main": [
+        [
+          {
+            "node": "Update Booking",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Guest",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Room",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Booking": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook2": {
+      "main": [
+        [
+          {
+            "node": "Check: Paid & Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buildingDetail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "floorDetail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomTypes1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomsDetail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomBookingDetail1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "serviceTypes1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "serviceAvailability1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Conversation Memory2": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Respond Standard Response2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook4": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Insert Booking Detail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields4": {
+      "main": [
+        [
+          {
+            "node": "Insert documents1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields5": {
+      "main": [
+        [
+          {
+            "node": "Insert Room Booking Detail1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Find documents2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find documents2": {
+      "main": [
+        [
+          {
+            "node": "Find documents3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find documents3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript4": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript6": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields4",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields5",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buildingDetail2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomTypes2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "roomBookingDetail2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond Standard Response2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Risk Score1": {
+      "main": [
+        [
+          {
+            "node": "Check Risk Level1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Stripe Trigger": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Update Booking After Payment4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript5": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert documents1": {
+      "main": [
+        [
+          {
+            "node": "payment3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "993cb3bc-8e86-4a33-898a-da9439d5e520",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "af2f24be5c51f742b82c93f7f0f619c14d6da46c6de5374da99d90c606e66e76"
+  },
+  "id": "rnHOOGH6x04A6twp",
+  "tags": []
+}

@@ -4,6 +4,7 @@ https://drive.google.com/file/d/1NsEkNnJPQqOYYXGDlgLEmJHJcMybF1gF/view?usp=shari
 https://sunset-valley-automation.vercel.app/
 
 # Vapi AI Instructions
+(VAPI AI is working properly on the local PC web host but not on Vercel hosting.)
 1. Get Your Vapi Public API Key
 
 Open the Vapi Dashboard
